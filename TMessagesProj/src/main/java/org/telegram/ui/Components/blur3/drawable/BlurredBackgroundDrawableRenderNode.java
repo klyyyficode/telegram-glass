@@ -28,59 +28,43 @@ public class BlurredBackgroundDrawableRenderNode extends BlurredBackgroundDrawab
     private final RenderNode renderNodeFill;
 
     private final Paint paintShadow = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private final Paint paintStrokeTop = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private final Paint paintStrokeBottom = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint paintStrokeTop = new Paint(Paint.Style.STROKE);
+    private final Paint paintStrokeBottom = new Paint(Paint.Style.STROKE);
 
     private boolean renderNodeInvalidated;
-
-    public BlurredBackgroundDrawableRenderNode(BlurredBackgroundSource source) {
-        this.renderNode = new RenderNode("BlurredNode");
-        this.renderNodeFill = new RenderNode("BlurredFill");
-        this.renderNode.setClipToOutline(true);
-        this.renderNode.setClipToBounds(true);
-
-        this.source = source;
-
-        this.paintShadow.setColor(0);
-        this.paintStrokeTop.setStyle(Paint.Style.STROKE);
-        this.paintStrokeBottom.setStyle(Paint.Style.STROKE);
-    }
-
-    @Override
-    public BlurredBackgroundDrawable setClipToOutline(boolean clipToOutline) {
-        renderNode.setClipToOutline(clipToOutline);
-        return super.setClipToOutline(clipToOutline);
-    }
-
     private LiquidGlassEffect liquidGlassEffect;
 
-    @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
     public BlurredBackgroundDrawableRenderNode(BlurredBackgroundSource source) {
         this.renderNode = new RenderNode("BlurredNode");
         this.renderNodeFill = new RenderNode("BlurredFill");
         this.renderNode.setClipToOutline(true);
         this.renderNode.setClipToBounds(true);
+
         this.source = source;
+
         this.paintShadow.setColor(0);
+        this.paintStrokeTop.setAntiAlias(true);
+        this.paintStrokeBottom.setAntiAlias(true);
         this.paintStrokeTop.setStyle(Paint.Style.STROKE);
         this.paintStrokeBottom.setStyle(Paint.Style.STROKE);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             setLiquidGlassEffectAllowed();
         }
     }
+
     @Override
     public BlurredBackgroundDrawable setClipToOutline(boolean clipToOutline) {
         renderNode.setClipToOutline(clipToOutline);
         return super.setClipToOutline(clipToOutline);
     }
-    private LiquidGlassEffect liquidGlassEffect;
+
     @RequiresApi(api = Build.VERSION_CODES.TIRAMISU)
     public void setLiquidGlassEffectAllowed() {
         if (liquidGlassEffect == null) {
             liquidGlassEffect = new LiquidGlassEffect(renderNodeFill);
         }
     }
-
 
     @Override
     public BlurredBackgroundSource getSource() {
@@ -125,17 +109,19 @@ public class BlurredBackgroundDrawableRenderNode extends BlurredBackgroundDrawab
     public void updateDisplayList() {
         final float offsetX = sourceOffsetX;
         final float offsetY = sourceOffsetY;
+
         Canvas c;
+
         final float sL = boundProps.boundsWithPadding.left + offsetX;
         final float sT = boundProps.boundsWithPadding.top + offsetY;
         final float sR = boundProps.boundsWithPadding.right + offsetX;
         final float sB = boundProps.boundsWithPadding.bottom + offsetY;
-        // Если тема передала полностью непрозрачный цвет (alpha 255),
-        // делаем его полупрозрачным (alpha 195), чтобы жидкое стекло всегда просвечивало
+
         int glassColor = backgroundColor;
         if (liquidGlassEffect != null && Color.alpha(glassColor) > 205) {
             glassColor = Color.argb(195, Color.red(glassColor), Color.green(glassColor), Color.blue(glassColor));
         }
+
         c = renderNodeFill.beginRecording();
         c.save();
         c.translate(-sL, -sT);
@@ -143,6 +129,7 @@ public class BlurredBackgroundDrawableRenderNode extends BlurredBackgroundDrawab
             final int thickness = Math.max(Math.min(
                 boundProps.liquidThickness <= 0 ? dp(14) : boundProps.liquidThickness,
                 Math.min(boundProps.boundsWithPadding.width(), boundProps.boundsWithPadding.height()) / 4), 1);
+
             liquidGlassEffect.update(
                 0, 0, boundProps.boundsWithPadding.width(), boundProps.boundsWithPadding.height(),
                 boundProps.shaderRadii[0], boundProps.shaderRadii[2], boundProps.shaderRadii[4], boundProps.shaderRadii[6],
@@ -155,6 +142,7 @@ public class BlurredBackgroundDrawableRenderNode extends BlurredBackgroundDrawab
         source.draw(c, sL, sT, sR, sB);
         c.restore();
         renderNodeFill.endRecording();
+
         c = renderNode.beginRecording();
         if (liquidGlassEffect == null && Color.alpha(glassColor) == 255) {
             c.drawColor(glassColor);

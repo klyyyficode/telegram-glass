@@ -14710,10 +14710,6 @@ public class ChatActivityEnterView extends FrameLayout implements
         return stickersArrow;
     }
 
-    private final LiquidGlassDrawable messagePillGlass = new LiquidGlassDrawable(LiquidGlassDrawable.STYLE_IOS_PILL);
-    private final LiquidGlassDrawable sendCircleGlass = new LiquidGlassDrawable(LiquidGlassDrawable.STYLE_IOS_PILL);
-    private boolean lensShaderAttached = false;
-
     @Override
     protected void dispatchDraw(Canvas canvas) {
         if (emojiView == null || emojiView.getVisibility() != View.VISIBLE || emojiView.getStickersExpandOffset() == 0) {
