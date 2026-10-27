@@ -76,19 +76,19 @@ jobs:
           mkdir -p TMessagesProj/config
           rm -f TMessagesProj/config/release.keystore
           keytool -genkey -v -keystore TMessagesProj/config/release.keystore \
-            -alias alias_tgglass -keyalg RSA -keysize 2048 -validity 10000 \
-            -storepass 123456789 -keypass 123456789 \
+            -alias androidkey -keyalg RSA -keysize 2048 -validity 10000 \
+            -storepass android -keypass android \
             -dname "CN=Telegram, OU=Android, O=Telegram, L=Dubai, S=Dubai, C=AE"
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Build Debug APK (Only main app with explicit keystore password)
+      - name: Build Debug APK
         run: |
           ./gradlew :TMessagesProj_App:assembleAfatDebug \
-            -PRELEASE_KEY_PASSWORD=123456 \
-            -PRELEASE_KEY_ALIAS=alias_name \
-            -PRELEASE_STORE_PASSWORD=123456 \
+            -PRELEASE_KEY_PASSWORD=android \
+            -PRELEASE_KEY_ALIAS=androidkey \
+            -PRELEASE_STORE_PASSWORD=android \
             --build-cache --parallel
 
       - name: Upload Built APK
