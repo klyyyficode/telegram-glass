@@ -77,7 +77,7 @@ jobs:
           rm -f TMessagesProj/config/release.keystore
           keytool -genkey -v -keystore TMessagesProj/config/release.keystore \
             -alias alias_tgglass -keyalg RSA -keysize 2048 -validity 10000 \
-            -storepass 37130506 -keypass 37130506 \
+            -storepass 123456789 -keypass 123456789 \
             -dname "CN=Telegram, OU=Android, O=Telegram, L=Dubai, S=Dubai, C=AE"
 
       - name: Grant execute permission for gradlew
