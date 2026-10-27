@@ -1,0 +1,89 @@
+name: TelegramGlass
+
+on:
+  push:
+    branches: [ "*" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository with submodules
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Generate dummy google-services.json if missing
+        run: |
+          cat << 'EOF' > TMessagesProj/google-services.json
+          {
+            "project_info": {
+              "project_number": "123456789000",
+              "firebase_url": "https://telegram-glass.firebaseio.com",
+              "project_id": "telegram-glass",
+              "storage_bucket": "telegram-glass.appspot.com"
+            },
+            "client": [
+              {
+                "client_info": {
+                  "mobilesdk_app_id": "1:123456789000:android:1111111111111111",
+                  "android_client_info": { "package_name": "org.telegram.messenger" }
+                },
+                "api_key": [{ "current_key": "AIzaSyDummyKeyForLocalCompilation0000000" }]
+              },
+              {
+                "client_info": {
+                  "mobilesdk_app_id": "1:123456789000:android:2222222222222222",
+                  "android_client_info": { "package_name": "org.telegram.messenger.beta" }
+                },
+                "api_key": [{ "current_key": "AIzaSyDummyKeyForLocalCompilation0000000" }]
+              },
+              {
+                "client_info": {
+                  "mobilesdk_app_id": "1:123456789000:android:3333333333333333",
+                  "android_client_info": { "package_name": "org.telegram.messenger.web" }
+                },
+                "api_key": [{ "current_key": "AIzaSyDummyKeyForLocalCompilation0000000" }]
+              }
+            ],
+            "configuration_version": "1"
+          }
+          EOF
+          if [ -d "TMessagesProj_App" ]; then
+            cp TMessagesProj/google-services.json TMessagesProj_App/google-services.json
+          fi
+
+      - name: Generate release.keystore automatically
+        run: |
+          mkdir -p TMessagesProj/config
+          rm -f TMessagesProj/config/release.keystore
+          keytool -genkey -v -keystore TMessagesProj/config/release.keystore \
+            -alias alias_tgglass -keyalg RSA -keysize 2048 -validity 10000 \
+            -storepass 37130506 -keypass 37130506 \
+            -dname "CN=Telegram, OU=Android, O=Telegram, L=Dubai, S=Dubai, C=AE"
+          echo "" >> gradle.properties
+          echo "RELEASE_KEY_PASSWORD=123456" >> gradle.properties
+          echo "RELEASE_KEY_ALIAS=alias_name" >> gradle.properties
+          echo "RELEASE_STORE_PASSWORD=123456" >> gradle.properties
+          echo "android.injected.testOnly=false" >> gradle.properties
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build Debug APK (arm64-v8a for modern phones)
+        run: ./gradlew :TMessagesProj_App:assembleArm64Debug || ./gradlew :TMessagesProj:assembleArm64Debug || ./gradlew assembleDebug
+
+      - name: Upload Built APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Telegram-Glass-APK
+          path: |
+            **/*.apk

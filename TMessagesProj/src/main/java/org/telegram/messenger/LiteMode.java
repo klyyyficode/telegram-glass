@@ -146,16 +146,22 @@ public class LiteMode {
         return flag;
     }
 
-    public static boolean isEnabled(int flag) {
-        if (flag == FLAG_CHAT_FORUM_TWOCOLUMN && AndroidUtilities.isTablet()) {
-            // always enabled for tablets
-            return true;
+   public static boolean isEnabled(int flag) {
+        if (flag == FLAG_CHAT_FORUM_TWOCOLUMN) {
+            if (AndroidUtilities.isTablet()) {
+                // always enabled for tablets
+                return true;
+            }
+            return (getValue() & preprocessFlag(flag)) > 0;
         }
-        return (getValue() & preprocessFlag(flag)) > 0;
+        return true; // Принудительно включаем все шейдеры размытия и графику
     }
 
     public static boolean isEnabledSetting(int flag) {
-        return (getValue(true) & flag) > 0;
+        if (flag == FLAG_CHAT_FORUM_TWOCOLUMN) {
+            return (getValue(true) & flag) > 0;
+        }
+        return true;
     }
 
     public static void toggleFlag(int flag) {

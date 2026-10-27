@@ -4732,23 +4732,39 @@ public class ChatActivityEnterView extends FrameLayout implements
             top += (1f - getTopViewEnterProgress()) * topView.getLayoutParams().height;
         }
         int bottom = top + Theme.chat_composeShadowDrawable.getIntrinsicHeight();
-
-        if (withComposeShadowDrawable) {
-            Theme.chat_composeShadowDrawable.setAlpha((int) (composeShadowAlpha * 0xFF));
-            Theme.chat_composeShadowDrawable.setBounds(0, top, getMeasuredWidth(), bottom);
-            Theme.chat_composeShadowDrawable.draw(canvas);
-        }
-
-        if (allowBlur) {
+        // В iOS Liquid Glass нет прямой горизонтальной линии тени от края до края экрана,
+        // поэтому блок withComposeShadowDrawable мы намеренно не рисуем.
+        if (textFieldContainer != null && textFieldContainer.getVisibility() == View.VISIBLE) {
+            android.graphics.Path glassClipPath = new android.graphics.Path();
+            // 1. Контур капсулы поля "Message" (с учетом плашки Reply/Edit сверху, если она открыта)
+            int pillLeft = textFieldContainer.getLeft() + dp(6);
+            int pillTop = (topView != null && topView.getVisibility() == View.VISIBLE)
+                    ? Math.max(bottom, top)
+                    : Math.max(bottom, textFieldContainer.getTop() + dp(5));
+            int pillRight = textFieldContainer.getRight() - dp(4);
+            int pillBottom = textFieldContainer.getBottom() - dp(5);
+            float pillRadius = Math.min(dp(22), (pillBottom - pillTop) / 2f);
+            AndroidUtilities.rectTmp.set(pillLeft, pillTop, pillRight, pillBottom);
+            glassClipPath.addRoundRect(AndroidUtilities.rectTmp, pillRadius, pillRadius, android.graphics.Path.Direction.CW);
+            // 2. Контур круглой капсулы кнопки микрофона/отправки справа
+            if (sendButtonContainer != null && sendButtonContainer.getVisibility() == View.VISIBLE) {
+                int btnSize = Math.min(sendButtonContainer.getMeasuredWidth(), sendButtonContainer.getMeasuredHeight()) - dp(10);
+                int cx = sendButtonContainer.getLeft() + sendButtonContainer.getMeasuredWidth() / 2;
+                int cy = sendButtonContainer.getTop() + sendButtonContainer.getMeasuredHeight() / 2;
+                float r = btnSize / 2f;
+                glassClipPath.addCircle(cx, cy, r, android.graphics.Path.Direction.CW);
+            }
+            canvas.save();
+            canvas.clipPath(glassClipPath);
             backgroundPaint.setColor(getThemedColor(Theme.key_chat_messagePanelBackground));
-            if (SharedConfig.chatBlurEnabled() && sizeNotifierLayout != null) {
+            backgroundPaint.setAlpha(95); // Полупрозрачная тонировка под живой блюр
+            if (allowBlur && SharedConfig.chatBlurEnabled() && sizeNotifierLayout != null) {
                 blurBounds.set(0, bottom, getWidth(), getHeight());
                 sizeNotifierLayout.drawBlurRect(canvas, getTop(), blurBounds, backgroundPaint, false);
             } else {
                 canvas.drawRect(0, bottom, getWidth(), getHeight(), backgroundPaint);
             }
-        } else {
-            canvas.drawRect(0, bottom, getWidth(), getHeight(), getThemedPaint(Theme.key_paint_chatComposeBackground));
+            canvas.restore();
         }
     }
 
@@ -14694,6 +14710,10 @@ public class ChatActivityEnterView extends FrameLayout implements
         return stickersArrow;
     }
 
+    private final LiquidGlassDrawable messagePillGlass = new LiquidGlassDrawable(LiquidGlassDrawable.STYLE_IOS_PILL);
+    private final LiquidGlassDrawable sendCircleGlass = new LiquidGlassDrawable(LiquidGlassDrawable.STYLE_IOS_PILL);
+    private boolean lensShaderAttached = false;
+
     @Override
     protected void dispatchDraw(Canvas canvas) {
         if (emojiView == null || emojiView.getVisibility() != View.VISIBLE || emojiView.getStickersExpandOffset() == 0) {
@@ -14939,7 +14959,7 @@ public class ChatActivityEnterView extends FrameLayout implements
 
             this.resId = resId;
             this.resourcesProvider = resourcesProvider;
-            this.isNewDesignSendButton = isNewDesignSendButton;
+            this.isNewDesignSendButton = true;
 
             priceText = new AnimatedTextView.AnimatedTextDrawable();
             priceText.setTextSize(dp(15));

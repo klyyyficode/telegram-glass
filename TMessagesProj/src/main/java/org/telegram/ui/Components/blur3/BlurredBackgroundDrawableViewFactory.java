@@ -73,10 +73,10 @@ public class BlurredBackgroundDrawableViewFactory {
     }
 
 
-    private boolean isLiquidGlassEffectAllowed;
+    private boolean isLiquidGlassEffectAllowed = true;
 
     public void setLiquidGlassEffectAllowed(boolean liquidGlassEffectAllowed) {
-        isLiquidGlassEffectAllowed = liquidGlassEffectAllowed;
+        isLiquidGlassEffectAllowed = true;
     }
 
     public BlurredBackgroundDrawable create() {

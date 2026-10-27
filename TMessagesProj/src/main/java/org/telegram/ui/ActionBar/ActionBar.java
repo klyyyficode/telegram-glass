@@ -212,8 +212,8 @@ public class ActionBar extends FrameLayout implements FactorAnimator.Target, The
     }
 
     public void setupGlass(BlurredBackgroundDrawableViewFactory factory,
-                           BlurredBackgroundColorProvider colorProvider,
-                           boolean isForum) {
+        BlurredBackgroundColorProvider colorProvider,
+        boolean isForum) {
         setBackground(null);
         setClipChildren(false);
         glassMode = true;
