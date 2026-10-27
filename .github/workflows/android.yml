@@ -79,23 +79,21 @@ jobs:
             -alias alias_tgglass -keyalg RSA -keysize 2048 -validity 10000 \
             -storepass 37130506 -keypass 37130506 \
             -dname "CN=Telegram, OU=Android, O=Telegram, L=Dubai, S=Dubai, C=AE"
-          echo "" >> gradle.properties
-          echo "RELEASE_KEY_PASSWORD=123456" >> gradle.properties
-          echo "RELEASE_KEY_ALIAS=alias_name" >> gradle.properties
-          echo "RELEASE_STORE_PASSWORD=123456" >> gradle.properties
-          echo "android.injected.testOnly=false" >> gradle.properties
-          echo "org.gradle.caching=true" >> gradle.properties
-          echo "org.gradle.parallel=true" >> gradle.properties
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Build Debug APK
-        run: ./gradlew assembleAfatDebug --build-cache --parallel
+      - name: Build Debug APK (Only main app with explicit keystore password)
+        run: |
+          ./gradlew :TMessagesProj_App:assembleAfatDebug \
+            -PRELEASE_KEY_PASSWORD=123456 \
+            -PRELEASE_KEY_ALIAS=alias_name \
+            -PRELEASE_STORE_PASSWORD=123456 \
+            --build-cache --parallel
 
       - name: Upload Built APK
         uses: actions/upload-artifact@v4
         with:
           name: TelegramGlass-APK
           path: |
-            **/*.apk
+            TMessagesProj_App/build/outputs/apk/**/*.apk
