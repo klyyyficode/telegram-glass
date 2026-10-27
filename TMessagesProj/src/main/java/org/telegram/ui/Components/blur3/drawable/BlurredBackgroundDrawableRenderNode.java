@@ -28,8 +28,8 @@ public class BlurredBackgroundDrawableRenderNode extends BlurredBackgroundDrawab
     private final RenderNode renderNodeFill;
 
     private final Paint paintShadow = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private final Paint paintStrokeTop = new Paint(Paint.Style.STROKE);
-    private final Paint paintStrokeBottom = new Paint(Paint.Style.STROKE);
+    private final Paint paintStrokeTop = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint paintStrokeBottom = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     private boolean renderNodeInvalidated;
     private LiquidGlassEffect liquidGlassEffect;
