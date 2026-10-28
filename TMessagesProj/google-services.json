@@ -1,50 +1,47 @@
+
 {
-  "project_info": {
-    "project_number": "123456789000",
-    "firebase_url": "https://telegram-liquid-glass.firebaseio.com",
-    "project_id": "telegram-liquid-glass",
-    "storage_bucket": "telegram-liquid-glass.appspot.com"
-  },
-  "client": [
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:123456789000:android:1111111111111111",
-        "android_client_info": {
-          "package_name": "org.telegram.messenger"
-        }
-      },
-      "api_key": [
-        {
-          "current_key": "AIzaSyDummyKeyForLocalCompilation0000000"
-        }
-      ]
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:123456789000:android:2222222222222222",
-        "android_client_info": {
-          "package_name": "org.telegram.messenger.beta"
-        }
-      },
-      "api_key": [
-        {
-          "current_key": "AIzaSyDummyKeyForLocalCompilation0000000"
-        }
-      ]
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:123456789000:android:3333333333333333",
-        "android_client_info": {
-          "package_name": "org.telegram.messenger.web"
-        }
-      },
-      "api_key": [
-        {
-          "current_key": "AIzaSyDummyKeyForLocalCompilation0000000"
-        }
-      ]
-    }
-  ],
-  "configuration_version": "1"
+            "project_info": {
+              "project_number": "123456789000",
+              "firebase_url": "https://telegram-glass.firebaseio.com",
+              "project_id": "telegram-glass",
+              "storage_bucket": "telegram-glass.appspot.com"
+            },
+            "client": [
+              {
+                "client_info": {
+                  "mobilesdk_app_id": "1:123456789000:android:1111111111111111",
+                  "android_client_info": { "package_name": "org.telegram.messenger" }
+                },
+                "api_key": [{ "current_key": "AIzaSyDummyKeyForLocalCompilation0000000" }]
+              },
+              {
+                "client_info": {
+                  "mobilesdk_app_id": "1:123456789000:android:2222222222222222",
+                  "android_client_info": { "package_name": "org.telegram.messenger.beta" }
+                },
+                "api_key": [{ "current_key": "AIzaSyDummyKeyForLocalCompilation0000000" }]
+              },
+              {
+                "client_info": {
+                  "mobilesdk_app_id": "1:123456789000:android:3333333333333333",
+                  "android_client_info": { "package_name": "org.telegram.glass" }
+                },
+                "api_key": [{ "current_key": "AIzaSyDummyKeyForLocalCompilation0000000" }]
+              },
+              {
+                "client_info": {
+                  "mobilesdk_app_id": "1:123456789000:android:4444444444444444",
+                  "android_client_info": { "package_name": "org.telegram.glass.glass" }
+                },
+                "api_key": [{ "current_key": "AIzaSyDummyKeyForLocalCompilation0000000" }]
+              },
+              {
+                "client_info": {
+                  "mobilesdk_app_id": "1:123456789000:android:5555555555555555",
+                  "android_client_info": { "package_name": "org.telegram.messenger.glass" }
+                },
+                "api_key": [{ "current_key": "AIzaSyDummyKeyForLocalCompilation0000000" }]
+              }
+            ],
+            "configuration_version": "1"
 }

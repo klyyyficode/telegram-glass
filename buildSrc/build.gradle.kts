@@ -21,9 +21,11 @@ gradlePlugin {
 }
 
 repositories {
+    maven { url = uri("https://maven.aliyun.com/repository/central") }
+    maven { url = uri("https://maven.aliyun.com/repository/public") }
+    maven { url = uri("https://maven.aliyun.com/repository/gradle-plugin") }
     google()
     mavenCentral()
-    gradlePluginPortal()
 }
 /*
 val checkEmojiKeyboard by tasks.registering(GenerateSchemeTask::class) {

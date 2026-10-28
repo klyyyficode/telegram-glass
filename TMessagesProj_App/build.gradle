@@ -73,7 +73,6 @@ android {
             debuggable false
             jniDebuggable false
             signingConfig signingConfigs.debug
-            applicationIdSuffix ".glass"
             resValue "string", "AppName", "TelegramGlass"
             resValue "string", "AppNameBeta", "TelegramGlass"
             minifyEnabled false

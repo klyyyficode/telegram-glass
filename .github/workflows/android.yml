@@ -52,14 +52,28 @@ jobs:
               {
                 "client_info": {
                   "mobilesdk_app_id": "1:123456789000:android:2222222222222222",
-                  "android_client_info": { "package_name": "org.telegram.messenger.glass" }
+                  "android_client_info": { "package_name": "org.telegram.messenger.beta" }
                 },
                 "api_key": [{ "current_key": "AIzaSyDummyKeyForLocalCompilation0000000" }]
               },
               {
                 "client_info": {
                   "mobilesdk_app_id": "1:123456789000:android:3333333333333333",
-                  "android_client_info": { "package_name": "org.telegram.messenger.web" }
+                  "android_client_info": { "package_name": "org.telegram.glass" }
+                },
+                "api_key": [{ "current_key": "AIzaSyDummyKeyForLocalCompilation0000000" }]
+              },
+              {
+                "client_info": {
+                  "mobilesdk_app_id": "1:123456789000:android:4444444444444444",
+                  "android_client_info": { "package_name": "org.telegram.glass.glass" }
+                },
+                "api_key": [{ "current_key": "AIzaSyDummyKeyForLocalCompilation0000000" }]
+              },
+              {
+                "client_info": {
+                  "mobilesdk_app_id": "1:123456789000:android:5555555555555555",
+                  "android_client_info": { "package_name": "org.telegram.messenger.glass" }
                 },
                 "api_key": [{ "current_key": "AIzaSyDummyKeyForLocalCompilation0000000" }]
               }
