@@ -29,7 +29,9 @@ jobs:
             TMessagesProj/.cxx
             TMessagesProj/build/intermediates/cxx
             TMessagesProj/build/intermediates/cmake
-          key: ${{ runner.os }}-native-cxx-${{ hashFiles('TMessagesProj/jni/CMakeLists.txt') }}
+            TMessagesProj_App/.cxx
+            TMessagesProj_App/build/intermediates/cxx
+          key: ${{ runner.os }}-native-cxx-arm64-${{ hashFiles('TMessagesProj/jni/CMakeLists.txt') }}
 
       - name: Generate dummy google-services.json if missing
         run: |
