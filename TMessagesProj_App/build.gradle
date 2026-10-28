@@ -70,15 +70,17 @@ android {
 
     buildTypes {
         debug {
-            debuggable true
-            jniDebuggable true
+            debuggable false
+            jniDebuggable false
             signingConfig signingConfigs.debug
-            applicationIdSuffix ".beta"
+            applicationIdSuffix ".glass"
+            resValue "string", "AppName", "TelegramGlass"
+            resValue "string", "AppNameBeta", "TelegramGlass"
             minifyEnabled false
             shrinkResources false
             multiDexEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), '../TMessagesProj/proguard-rules.pro'
-            ndk.debugSymbolLevel = 'FULL'
+            ndk.debugSymbolLevel = 'NONE'
         }
 
         standalone {
@@ -153,7 +155,7 @@ android {
 
     applicationVariants.all { variant ->
         variant.outputs.all { output ->
-            outputFileName = "app.apk"
+            outputFileName = "TelegramGlass.apk"
             output.versionCodeOverride = defaultConfig.versionCode * 10 + variant.productFlavors.get(0).abiVersionCode
         }
     }

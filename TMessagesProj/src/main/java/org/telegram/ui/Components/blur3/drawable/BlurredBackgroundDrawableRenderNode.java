@@ -118,8 +118,8 @@ public class BlurredBackgroundDrawableRenderNode extends BlurredBackgroundDrawab
         final float sB = boundProps.boundsWithPadding.bottom + offsetY;
 
         int glassColor = backgroundColor;
-        if (liquidGlassEffect != null && Color.alpha(glassColor) > 205) {
-            glassColor = Color.argb(195, Color.red(glassColor), Color.green(glassColor), Color.blue(glassColor));
+        if (liquidGlassEffect != null && Color.alpha(glassColor) > 75) {
+            glassColor = Color.argb(60, Color.red(glassColor), Color.green(glassColor), Color.blue(glassColor));
         }
 
         c = renderNodeFill.beginRecording();
@@ -127,8 +127,8 @@ public class BlurredBackgroundDrawableRenderNode extends BlurredBackgroundDrawab
         c.translate(-sL, -sT);
         if (liquidGlassEffect != null && Build.VERSION.SDK_INT >= 33) {
             final int thickness = Math.max(Math.min(
-                boundProps.liquidThickness <= 0 ? dp(14) : boundProps.liquidThickness,
-                Math.min(boundProps.boundsWithPadding.width(), boundProps.boundsWithPadding.height()) / 4), 1);
+                boundProps.liquidThickness <= 0 ? dp(18) : boundProps.liquidThickness,
+                Math.min(boundProps.boundsWithPadding.width(), boundProps.boundsWithPadding.height()) / 3), 1);
 
             liquidGlassEffect.update(
                 0, 0, boundProps.boundsWithPadding.width(), boundProps.boundsWithPadding.height(),

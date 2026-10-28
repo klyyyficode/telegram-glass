@@ -2259,8 +2259,14 @@ public class ActionBar extends FrameLayout implements FactorAnimator.Target, The
                     - ((MarginLayoutParams)(chatAvatarContainer.getLayoutParams())).leftMargin
                     - chatAvatarContainer.getLeftPadding()
                     + p + dp(3);
-                chatAvatarContainer.setTranslationX(translationX);
+                if (Math.abs(chatAvatarContainer.getTranslationX() - translationX) > 0.5f) {
+                    chatAvatarContainer.setTranslationX(translationX);
+                    chatAvatarContainer.requestLayout();
+                }
                 chatAvatarContainer.setPivotX((chatAvatarContainer.getMeasuredWidth()) / 2f - translationX );
+                if (menu != null && searchFactor == 0f && actionModeFactor == 0f) {
+                    menu.setAlpha(0f);
+                }
             } else {
                 left = leftDefault;
                 right = rightDefault;
@@ -2273,10 +2279,16 @@ public class ActionBar extends FrameLayout implements FactorAnimator.Target, The
             glassDrawableBack.setBounds(0, t, s + p * 2, b);
             glassDrawableBack.draw(canvas);
         }
-        if (glassDrawableMenu != null && menuWidth > 0 && !glassOnlyBack && !doNotDrawGlassMenu) {
-            glassDrawableMenu.setBounds(getWidth() - Math.max(s, menuWidth) - p * 2, t, getWidth(), b);
-            glassDrawableMenu.setAlpha(hasForcedMenuWidth ? 255 : (int) (255 * animatorHasMenuItems.getFloatValue()));
-            glassDrawableMenu.draw(canvas);
+        if (glassDrawableMenu != null && !glassOnlyBack && !doNotDrawGlassMenu) {
+            if (chatAvatarContainer != null) {
+                glassDrawableMenu.setBounds(getWidth() - s - p * 2, t, getWidth(), b);
+                glassDrawableMenu.setAlpha((int) (255 * (1f - Math.max(searchFactor, actionModeFactor))));
+                glassDrawableMenu.draw(canvas);
+            } else if (menuWidth > 0) {
+                glassDrawableMenu.setBounds(getWidth() - Math.max(s, menuWidth) - p * 2, t, getWidth(), b);
+                glassDrawableMenu.setAlpha(hasForcedMenuWidth ? 255 : (int) (255 * animatorHasMenuItems.getFloatValue()));
+                glassDrawableMenu.draw(canvas);
+            }
         }
 
         if (blurredBackground && actionBarColor != Color.TRANSPARENT) {

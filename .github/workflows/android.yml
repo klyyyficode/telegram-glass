@@ -52,7 +52,7 @@ jobs:
               {
                 "client_info": {
                   "mobilesdk_app_id": "1:123456789000:android:2222222222222222",
-                  "android_client_info": { "package_name": "org.telegram.messenger.beta" }
+                  "android_client_info": { "package_name": "org.telegram.messenger.glass" }
                 },
                 "api_key": [{ "current_key": "AIzaSyDummyKeyForLocalCompilation0000000" }]
               },

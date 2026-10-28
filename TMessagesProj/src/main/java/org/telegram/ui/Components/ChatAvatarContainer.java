@@ -764,16 +764,21 @@ public class ChatAvatarContainer extends FrameLayout implements FactorAnimator.T
         glassMode = true;
     }
 
-        @Override
+           @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         final int actionBarHeight = ActionBar.getCurrentActionBarHeight();
         final int viewTop = (actionBarHeight - avatarImageView.getMeasuredHeight() - 2) / 2 + (occupyStatusBar ? AndroidUtilities.statusBarHeight : 0);
         final int subtitleTop = viewTop + dp(glassMode ? 23.66f : 24);
 
-        avatarImageView.layout(1 + leftPadding, 1 + viewTop, 1 + leftPadding + avatarImageView.getMeasuredWidth(), 1 + viewTop + avatarImageView.getMeasuredHeight());
-        int l = leftPadding + (avatarImageView.getVisibility() == VISIBLE ? dp(glassMode ? 49.66f : 55) : dp(glassMode ? 13 : 1)) + rightAvatarPadding;
+        int l;
+        if (glassMode) {
+            // В режиме iOS текст начинается сразу внутри центральной капсулы (без отступа под аватарку слева)
+            l = leftPadding + dp(13);
+        } else {
+            l = leftPadding + (avatarImageView.getVisibility() == VISIBLE ? dp(55) : dp(1)) + rightAvatarPadding;
+        }
 
-        // В режиме iOS Liquid Glass центрируем заголовок и статус ("online") друг относительно друга внутри капсулы
+        // Центрируем имя и статус ("в сети") друг относительно друга
         int titleLeft = l;
         int subtitleLeft = l;
         if (glassMode && titleTextView != null) {
@@ -789,6 +794,18 @@ public class ChatAvatarContainer extends FrameLayout implements FactorAnimator.T
                 titleLeft = l + Math.max(0, (blockWidth - titleW) / 2);
                 subtitleLeft = l + Math.max(0, (blockWidth - subW) / 2);
             }
+        }
+
+        if (glassMode && actionBar != null && actionBar.getMeasuredWidth() > 0) {
+            // Выносим круглую аватарку в правый угол шапки (с учетом смещения translationX контейнера)
+            int parentWidth = actionBar.getMeasuredWidth();
+            int avatarSize = avatarImageView.getMeasuredWidth();
+            int targetScreenRight = parentWidth - dp(11);
+            int targetScreenLeft = targetScreenRight - avatarSize;
+            int localAvatarLeft = Math.round(targetScreenLeft - getLeft() - getTranslationX());
+            avatarImageView.layout(localAvatarLeft, 1 + viewTop, localAvatarLeft + avatarSize, 1 + viewTop + avatarImageView.getMeasuredHeight());
+        } else {
+            avatarImageView.layout(1 + leftPadding, 1 + viewTop, 1 + leftPadding + avatarImageView.getMeasuredWidth(), 1 + viewTop + avatarImageView.getMeasuredHeight());
         }
 
         SimpleTextView titleTextLargerCopyView = this.titleTextLargerCopyView.get();
@@ -1732,6 +1749,9 @@ public class ChatAvatarContainer extends FrameLayout implements FactorAnimator.T
     }
 
     public boolean hasVisibleAvatar() {
+        if (glassMode) {
+            return false;
+        }
         return avatarImageView != null && avatarImageView.getVisibility() == VISIBLE;
     }
 
@@ -1741,13 +1761,15 @@ public class ChatAvatarContainer extends FrameLayout implements FactorAnimator.T
         if (titleTextView != null) {
             width = Math.max(width, titleTextView.getExactWidthIncludeDrawables());
         }
-        if (subtitleTextView != null) {
+        if (subtitleTextView != null && subtitleTextView.getVisibility() != GONE) {
             width = Math.max(width, subtitleTextView.getExactWidthIncludeDrawables());
+        } else if (animatedSubtitleTextView != null && animatedSubtitleTextView.getVisibility() != GONE) {
+            width = Math.max(width, animatedSubtitleTextView.getMeasuredWidth());
         }
         if (hasVisibleAvatar()) {
             width += dp(52 + 18);
         } else {
-            width += dp(34);
+            width += dp(36);
         }
         return (int) width;
     }
